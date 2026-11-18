@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Кошонаи Бахт — Анкета</title>
+  <style>
+    :root {
+      --primary: #7c1d3e;
+      --primary-light: #a12953;
+      --bg: #f8f4f5;
+      --card: #ffffff;
+      --text: #222222;
+      --muted: #6b6b6b;
+      --border: #e0d6d9;
+      --accent-bg: #fdf2f5;
+    }
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body, .card, input, select, textarea { color-scheme: light !important; }
+    body { margin: 0; background: var(--bg); color: var(--text); padding-bottom: 40px; }
+    .header {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: #fff;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom-left-radius: 16px;
+      border-bottom-right-radius: 16px;
+      box-shadow: 0 4px 12px rgba(124, 29, 62, 0.2);
+      margin-bottom: 16px;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .logo-box {
+      width: 44px; height: 44px; background: #fff; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; color: var(--primary); font-weight: bold; flex-shrink: 0;
+    }
+    .brand-title h1 { margin: 0; font-size: 18px; }
+    .brand-title p { margin: 2px 0 0; font-size: 12px; opacity: 0.9; }
+    .container { max-width: 600px; margin: 0 auto; padding: 0 16px; }
+    .card {
+      background: var(--card); border-radius: 16px; padding: 16px; margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid var(--border);
+    }
+    .card-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border);
+    }
+    .card-header h2 { margin: 0; font-size: 16px; color: var(--primary); }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 400px) { .grid-2 { grid-template-columns: 1fr; } }
+    .form-group { margin-bottom: 12px; }
+    label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: #333; }
+    input[type="text"], input[type="number"], input[type="tel"], select, textarea {
+      width: 100%; padding: 10px 12px; border: 1px solid var(--border);
+      border-radius: 10px; font-size: 14px; background: #fff !important; color: #222 !important; outline: none;
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--primary); }
+    textarea { resize: vertical; min-height: 75px; }
+    .chip-group { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+    .chip-label {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 14px; border-radius: 20px; border: 1.5px solid var(--border);
+      background: #fff; font-size: 13px; font-weight: 600; cursor: pointer;
+      user-select: none; transition: all 0.2s; color: #333;
+    }
+    .chip-label input { display: none; }
+    .chip-label.selected {
+      background: var(--primary); color: #fff; border-color: var(--primary);
+    }
+    .phone-row { display: flex; gap: 8px; }
+    .phone-code { width: 108px !important; flex-shrink: 0; }
+    .btn {
+      padding: 10px 16px; border: none; border-radius: 10px; font-size: 14px;
+      font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      transition: 0.2s;
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn-success {
+      background: #1e824c; color: #fff; width: 100%; padding: 14px; font-size: 16px;
+      box-shadow: 0 4px 12px rgba(30, 130, 76, 0.25);
+    }
+    .btn-outline { background: #fff; border: 1px solid var(--border); color: var(--text); padding: 6px 12px; font-size: 12px; }
+    .btn-sm { padding: 6px 10px; font-size: 12px; }
+    .toast {
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(80px);
+      background: #222; color: #fff; padding: 12px 20px; border-radius: 24px;
+      font-size: 14px; font-weight: 600; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      z-index: 1200; opacity: 0; transition: all 0.25s ease; white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="brand">
+      <div class="logo-box">🏠</div>
+      <div class="brand-title">
+        <h1>Кошонаи Бахт</h1>
+        <p>Барои сохтани анкета маълумотро пур кунед</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <form id="clientForm" onsubmit="return false;">
+      <div class="card">
+        <div class="card-header">
+          <h2>1. Маълумот дар бораи шумо</h2>
+          <button type="button" class="btn btn-outline" onclick="resetClientForm()">Аз нав</button>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Ҷинс *</label>
+            <select id="gender" required onchange="updateGenderLabels()">
+              <option value="Зан">Зан</option>
+              <option value="Духтар">Духтар</option>
+              <option value="Мард">Мард</option>
+              <option value="Ҷавон">Ҷавон</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Синну сол (сола) *</label>
+            <input type="number" id="age" min="18" max="90" required placeholder="Масалан: 25" />
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Номи шумо (махфӣ мемонад)</label>
+            <input type="text" id="internalName" placeholder="Номи Шумо (дар анкета нашр намекунем)" />
+          </div>
+          <div class="form-group">
+            <label>Ҷои истиқомат *</label>
+            <input type="text" id="location" required placeholder="Шаҳр ё ноҳия" />
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Қад (см)</label>
+            <input type="number" id="height" placeholder="170" />
+          </div>
+          <div class="form-group">
+            <label>Вазн (кг)</label>
+            <input type="number" id="weight" placeholder="65" />
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Маълумот</label>
+            <select id="education">
+              <option value="Миёна">Миёна</option>
+              <option value="Миёнаи махсус">Миёнаи махсус</option>
+              <option value="Олӣ">Олӣ</option>
+              <option value="Олии нопурра">Олии нопурра</option>
+              <option value="Донишҷӯ">Донишҷӯ</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Касбу кор</label>
+            <input type="text" id="job" placeholder="Муаллим, духтур..." />
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Ҳолати оилавӣ</label>
+            <select id="maritalStatus">
+              <option value="Муҷаррад">Муҷаррад</option>
+              <option value="Ҷудошуда">Ҷудошуда</option>
+              <option value="Оиладор">Оиладор</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Чанд фарзанд доред?</label>
+            <select id="childrenCount">
+              <option value="Надорам">Надорам</option>
+              <option value="1 фарзанд">1 фарзанд</option>
+              <option value="2 фарзанд">2 фарзанд</option>
+              <option value="3 фарзанд">3 фарзанд</option>
+              <option value="4 фарзанд">4 фарзанд</option>
+              <option value="5 фарзанд">5 фарзанд</option>
+              <option value="Аз 5 зиёд">Аз 5 зиёд</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Фарзандон бо кӣ зиндагӣ мекунанд?</label>
+            <input type="text" id="childrenWith" placeholder="Бо худам / Бо волидон..." />
+          </div>
+          <div class="form-group">
+            <label>Манзили зист</label>
+            <select id="housing">
+              <option value="Ҳавлӣ">Ҳавлӣ</option>
+              <option value="Хона дар бинои баландошёна">Хона дар бинои баландошёна</option>
+              <option value="Бо волидон (хонаи волидон)">Бо волидон (хонаи волидон)</option>
+              <option value="Иҷоранишин">Иҷоранишин</option>
+              <option value="Дигар">Дигар</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Дар манзили зист бо кӣ зиндагӣ мекунед?</label>
+          <input type="text" id="livingWith" placeholder="Танҳо / Бо падару модар / Бо волидон ва фарзандонам" />
+        </div>
+
+        <div class="form-group">
+          <label>Маълумоти иловагӣ</label>
+          <textarea id="extraInfo" placeholder="Маълумоти дигар дар бораи худ..."></textarea>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <h2>2. Талабот</h2>
+        </div>
+
+        <div class="form-group">
+          <label>Киро меҷӯед *</label>
+          <div class="chip-group" id="targetGenderGroup">
+            <label class="chip-label" onclick="toggleChip(this)">
+              <input type="checkbox" name="targetGender" value="Зан" /> Зан
+            </label>
+            <label class="chip-label" onclick="toggleChip(this)">
+              <input type="checkbox" name="targetGender" value="Духтар" /> Духтар
+            </label>
+            <label class="chip-label" onclick="toggleChip(this)">
+              <input type="checkbox" name="targetGender" value="Мард" /> Мард
+            </label>
+            <label class="chip-label" onclick="toggleChip(this)">
+              <input type="checkbox" name="targetGender" value="Ҷавон" /> Ҷавон
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Фарзанд дошта бошад ё не?</label>
+          <select id="partnerChildrenAllowed">
+            <option value="Фарқ надорад">Фарқ надорад</option>
+            <option value="Дошта бошад">Дошта бошад</option>
+            <option value="Надошта бошад">Надошта бошад</option>
+          </select>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Синни ҳамсар (аз)</label>
+            <input type="number" id="partnerAgeFrom" min="18" max="90" placeholder="20" />
+          </div>
+          <div class="form-group">
+            <label>Синни ҳамсар (то)</label>
+            <input type="number" id="partnerAgeTo" min="18" max="90" placeholder="35" />
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label id="partnerLocationLabel">Дар кадом шаҳру ноҳияҳо мехоҳед ба шавҳар бароед?</label>
+            <input type="text" id="partnerLocation" placeholder="Душанбе, Ҳисор..." />
+          </div>
+          <div class="form-group">
+            <label>То чанд фарзанд?</label>
+            <select id="partnerMaxChildren">
+              <option value="Фарқ надорад">Фарқ надорад</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <label>Талабот нисбати ҳамсар *</label>
+            <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('requirements').value=''" title="Тоза кардан">🧹</button>
+          </div>
+          <textarea id="requirements" required placeholder="Хислатҳо ва талаботи асосӣ..."></textarea>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2>🔒 Тамосҳои шахсӣ (Дар нашр пинҳон)</h2>
+        </div>
+
+        <div class="form-group">
+          <label>Телефон</label>
+          <div class="phone-row">
+            <select id="phoneCode" class="phone-code">
+              <option value="+992">🇹🇯 +992</option>
+              <option value="+7">🇷🇺 +7</option>
+              <option value="+998">🇺🇿 +998</option>
+              <option value="+996">🇰🇬 +996</option>
+              <option value="+993">🇹🇲 +993</option>
+              <option value="+1">🇺🇸 +1</option>
+              <option value="+44">🇬🇧 +44</option>
+            </select>
+            <input type="tel" inputmode="numeric" id="phone" class="phone-format" placeholder="918 61 61 61" maxlength="12" oninput="this.value = this.value.replace(/[^0-9\s]/g, '')" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>WhatsApp</label>
+          <div class="phone-row">
+            <select id="whatsappCode" class="phone-code">
+              <option value="+992">🇹🇯 +992</option>
+              <option value="+7">🇷🇺 +7</option>
+              <option value="+998">🇺🇿 +998</option>
+              <option value="+996">🇰🇬 +996</option>
+              <option value="+993">🇹🇲 +993</option>
+              <option value="+1">🇺🇸 +1</option>
+              <option value="+44">🇬🇧 +44</option>
+            </select>
+            <input type="tel" inputmode="numeric" id="whatsapp" class="phone-format" placeholder="918 61 61 61" maxlength="12" oninput="this.value = this.value.replace(/[^0-9\s]/g, '')" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Telegram</label>
+          <div class="phone-row">
+            <select id="telegramCode" class="phone-code">
+              <option value="+992">🇹🇯 +992</option>
+              <option value="+7">🇷🇺 +7</option>
+              <option value="+998">🇺🇿 +998</option>
+              <option value="+996">🇰🇬 +996</option>
+              <option value="+993">🇹🇲 +993</option>
+              <option value="+1">🇺🇸 +1</option>
+              <option value="+44">🇬🇧 +44</option>
+            </select>
+            <input type="tel" inputmode="numeric" id="telegram" class="phone-format" placeholder="918 61 61 61" maxlength="12" oninput="this.value = this.value.replace(/[^0-9\s]/g, '')" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>IMO</label>
+          <div class="phone-row">
+            <select id="imoCode" class="phone-code">
+              <option value="+992">🇹🇯 +992</option>
+              <option value="+7">🇷🇺 +7</option>
+              <option value="+998">🇺🇿 +998</option>
+              <option value="+996">🇰🇬 +996</option>
+              <option value="+993">🇹🇲 +993</option>
+              <option value="+1">🇺🇸 +1</option>
+              <option value="+44">🇬🇧 +44</option>
+            </select>
+            <input type="tel" inputmode="numeric" id="imo" class="phone-format" placeholder="918 61 61 61" maxlength="12" oninput="this.value = this.value.replace(/[^0-9\s]/g, '')" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Facebook</label>
+          <input type="text" id="facebook" placeholder="https://facebook.com" />
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-success" onclick="sendAnketaToTelegram()">
+        📨 Фиристодан ба Telegram
+      </button>
+    </form>
+  </div>
+
+  <div id="toast" class="toast"></div>
+  <script>
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      if (!t) return;
+      t.textContent = msg;
+      t.classList.add('show');
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
+    }
+
+    function formatTajikPhone(value) {
+      let digits = value.replace(/\D/g, '');
+      if (digits.startsWith('992') && digits.length > 9) digits = digits.slice(3);
+      digits = digits.slice(0, 9);
+      let parts = [];
+      if (digits.length > 0) parts.push(digits.slice(0, 3));
+      if (digits.length > 3) parts.push(digits.slice(3, 5));
+      if (digits.length > 5) parts.push(digits.slice(5, 7));
+      if (digits.length > 7) parts.push(digits.slice(7, 9));
+      return parts.join(' ');
+    }
+
+    document.querySelectorAll('.phone-format').forEach(input => {
+      input.addEventListener('input', function() {
+        this.value = formatTajikPhone(this.value);
+      });
+    });
+
+    function toggleChip(labelEl) {
+      setTimeout(() => {
+        const cb = labelEl.querySelector('input[type="checkbox"]');
+        labelEl.classList.toggle('selected', cb.checked);
+      }, 10);
+    }
+
+    function getSelectedTargetGenders() {
+      return Array.from(document.querySelectorAll('input[name="targetGender"]:checked')).map(cb => cb.value);
+    }
+
+    function updateGenderLabels() {
+      const gender = document.getElementById('gender').value;
+      const label = document.getElementById('partnerLocationLabel');
+      if (!label) return;
+      if (gender === 'Мард' || gender === 'Ҷавон') {
+        label.textContent = 'Аз кадом шаҳру ноҳияҳои ҷумҳурӣ имконияти зангирӣ доред?';
+      } else {
+        label.textContent = 'Дар кадом шаҳру ноҳияҳо мехоҳед ба шавҳар бароед?';
+      }
+    }
+
+    function resetClientForm() {
+      document.getElementById('clientForm').reset();
+      document.querySelectorAll('#targetGenderGroup .chip-label').forEach(label => {
+        label.querySelector('input').checked = false;
+        label.classList.remove('selected');
+      });
+      updateGenderLabels();
+    }
+
+    function sendAnketaToTelegram() {
+      const age = document.getElementById('age').value.trim();
+      const location = document.getElementById('location').value.trim();
+      const requirements = document.getElementById('requirements').value.trim();
+      const targetGenders = getSelectedTargetGenders();
+
+      if (!age) return alert('Лутфан синну солро ворид кунед!');
+      if (!location) return alert('Лутфан ҷои истиқоматро ворид кунед!');
+      if (targetGenders.length === 0) return alert('Лутфан дар банди "Киро меҷӯед" ҳадди ақал як вариантро интихоб кунед!');
+      if (!requirements) return alert('Лутфан талабот нисбати ҳамсарро нависед!');
+
+      const gender = document.getElementById('gender').value;
+      const internalName = document.getElementById('internalName').value.trim();
+      const height = document.getElementById('height').value.trim();
+      const weight = document.getElementById('weight').value.trim();
+      const education = document.getElementById('education').value;
+      const job = document.getElementById('job').value.trim();
+      const maritalStatus = document.getElementById('maritalStatus').value;
+      const childrenCount = document.getElementById('childrenCount').value;
+      const childrenWith = document.getElementById('childrenWith').value.trim();
+      const housing = document.getElementById('housing').value;
+      const livingWith = document.getElementById('livingWith').value.trim();
+      const extraInfo = document.getElementById('extraInfo').value.trim();
+
+      const partnerChildrenAllowed = document.getElementById('partnerChildrenAllowed').value;
+      const partnerAgeFrom = document.getElementById('partnerAgeFrom').value.trim();
+      const partnerAgeTo = document.getElementById('partnerAgeTo').value.trim();
+      const partnerLocation = document.getElementById('partnerLocation').value.trim();
+      const partnerMaxChildren = document.getElementById('partnerMaxChildren').value;
+
+      const phone = document.getElementById('phone').value.trim() ? document.getElementById('phoneCode').value + ' ' + document.getElementById('phone').value.trim() : '';
+      const whatsapp = document.getElementById('whatsapp').value.trim() ? document.getElementById('whatsappCode').value + ' ' + document.getElementById('whatsapp').value.trim() : '';
+      const telegram = document.getElementById('telegram').value.trim() ? document.getElementById('telegramCode').value + ' ' + document.getElementById('telegram').value.trim() : '';
+      const imo = document.getElementById('imo').value.trim() ? document.getElementById('imoCode').value + ' ' + document.getElementById('imo').value.trim() : '';
+      const facebook = document.getElementById('facebook').value.trim();
+
+      const targetMap = { 'Зан': 'бо зани', 'Духтар': 'бо духтари', 'Мард': 'бо марди', 'Ҷавон': 'бо ҷавони' };
+      const targetPhrase = targetGenders.map(t => targetMap[t] || t).join(' ё ');
+
+      let message = `${gender}. ${age} сола.\n`;
+      if (internalName) message += `Ном: ${internalName}.\n`;
+      message += `Сокини ${location}.\n`;
+      if (height) message += `Қад: ${height} см.\n`;
+      if (weight) message += `Вазн: ${weight} кг.\n`;
+      message += `Маълумот: ${education}.\n`;
+      if (job) message += `Касбу кор: ${job}.\n`;
+      message += `Ҳолати оилавӣ: ${maritalStatus}.\n`;
+
+      if (childrenCount !== 'Надорам') {
+        message += `Соҳиби ${childrenCount}.\n`;
+        if (childrenWith) message += `Фарзандонам ${childrenWith}.\n`;
+      } else {
+        message += `Фарзанд надорам.\n`;
+      }
+
+      message += `Манзили зист: ${housing}.\n`;
+      if (livingWith) message += `Дар манзили зист ${livingWith} зиндагӣ мекунам.\n`;
+      if (extraInfo) message += `Маълумоти иловагӣ: ${extraInfo}.\n`;
+
+      let seekLine = `Мехоҳам ${targetPhrase} оиладор шавам`;
+      if (partnerAgeFrom && partnerAgeTo) {
+        seekLine += ` аз ${partnerAgeFrom} то ${partnerAgeTo} сола`;
+      }
+      message += `${seekLine}.\n`;
+
+      message += `Фарзанд дошта бошад ё не: ${partnerChildrenAllowed}`;
+      if (partnerChildrenAllowed !== 'Надошта бошад' && partnerMaxChildren !== 'Фарқ надорад') {
+        message += ` (то ${partnerMaxChildren} фарзанд)`;
+      }
+      message += `.\n`;
+
+      if (partnerLocation) message += `Минтақаҳо: ${partnerLocation}.\n`;
+      message += `Талабот: ${requirements}\n\n`;
+
+      message += `🔒 Тамосҳои шахсӣ:\n`;
+      if (phone) message += `📞 Тел: ${phone}\n`;
+      if (whatsapp) message += `💬 WhatsApp: ${whatsapp}\n`;
+      if (telegram) message += `✈️ Telegram: ${telegram}\n`;
+      if (imo) message += `📱 IMO: ${imo}\n`;
+      if (facebook) message += `🔵 Facebook: ${facebook}\n`;
+
+      const encodedText = encodeURIComponent(message);
+      const tgUsername = "Koshonai_Bakht";
+      const tgUrl = `https://t.me{tgUsername}?text=${encodedText}`;
+
+      showToast('✅ Telegram кушода мешавад...');
+      window.location.href = tgUrl;
+    }
+  </script>
+</body>
+</html>
