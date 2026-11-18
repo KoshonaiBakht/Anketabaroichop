@@ -114,7 +114,7 @@
         <div class="grid-2">
           <div class="form-group">
             <label>Ҷинс *</label>
-            <select id="gender" required onchange="updateGenderLabels()">
+            <select id="gender" required onchange="updateVisibility()">
               <option value="Зан">Зан</option>
               <option value="Духтар">Духтар</option>
               <option value="Мард">Мард</option>
@@ -166,7 +166,7 @@
           </div>
         </div>
 
-        <div class="grid-2">
+        <div class="grid-2" id="maritalChildrenRow">
           <div class="form-group">
             <label>Ҳолати оилавӣ</label>
             <select id="maritalStatus">
@@ -177,7 +177,7 @@
           </div>
           <div class="form-group">
             <label>Чанд фарзанд доред?</label>
-            <select id="childrenCount">
+            <select id="childrenCount" onchange="updateVisibility()">
               <option value="Надорам">Надорам</option>
               <option value="1 фарзанд">1 фарзанд</option>
               <option value="2 фарзанд">2 фарзанд</option>
@@ -189,24 +189,23 @@
           </div>
         </div>
 
-        <div class="grid-2">
-          <div class="form-group">
-            <label>Фарзандон бо кӣ зиндагӣ мекунанд?</label>
-            <input type="text" id="childrenWith" placeholder="Бо худам / Бо волидон..." />
-          </div>
-          <div class="form-group">
-            <label>Манзили зист</label>
-            <select id="housing">
-              <option value="Ҳавлӣ">Ҳавлӣ</option>
-              <option value="Хона дар бинои баландошёна">Хона дар бинои баландошёна</option>
-              <option value="Бо волидон (хонаи волидон)">Бо волидон (хонаи волидон)</option>
-              <option value="Иҷоранишин">Иҷоранишин</option>
-              <option value="Дигар">Дигар</option>
-            </select>
-          </div>
+        <div class="form-group" id="childrenWithGroup">
+          <label>Фарзандон бо кӣ зиндагӣ мекунанд?</label>
+          <input type="text" id="childrenWith" placeholder="Бо худам / Бо модарашон..." />
         </div>
 
         <div class="form-group">
+          <label>Манзили зист</label>
+          <select id="housing" onchange="updateVisibility()">
+            <option value="Ҳавлӣ">Ҳавлӣ</option>
+            <option value="Хона дар бинои баландошёна">Хона дар бинои баландошёна</option>
+            <option value="Бо волидон (хонаи волидон)">Бо волидон (хонаи волидон)</option>
+            <option value="Иҷоранишин">Иҷоранишин</option>
+            <option value="Дигар">Дигар</option>
+          </select>
+        </div>
+
+        <div class="form-group" id="livingWithGroup">
           <label>Дар манзили зист бо кӣ зиндагӣ мекунед?</label>
           <input type="text" id="livingWith" placeholder="Танҳо / Бо падару модар / Бо волидон ва фарзандонам" />
         </div>
@@ -216,7 +215,7 @@
           <textarea id="extraInfo" placeholder="Маълумоти дигар дар бораи худ..."></textarea>
         </div>
       </div>
-      <div class="card">
+            <div class="card">
         <div class="card-header">
           <h2>2. Талабот</h2>
         </div>
@@ -224,16 +223,16 @@
         <div class="form-group">
           <label>Киро меҷӯед *</label>
           <div class="chip-group" id="targetGenderGroup">
-            <label class="chip-label" onclick="toggleChip(this)">
+            <label class="chip-label" data-target="Зан" onclick="toggleChip(this)">
               <input type="checkbox" name="targetGender" value="Зан" /> Зан
             </label>
-            <label class="chip-label" onclick="toggleChip(this)">
+            <label class="chip-label" data-target="Духтар" onclick="toggleChip(this)">
               <input type="checkbox" name="targetGender" value="Духтар" /> Духтар
             </label>
-            <label class="chip-label" onclick="toggleChip(this)">
+            <label class="chip-label" data-target="Мард" onclick="toggleChip(this)">
               <input type="checkbox" name="targetGender" value="Мард" /> Мард
             </label>
-            <label class="chip-label" onclick="toggleChip(this)">
+            <label class="chip-label" data-target="Ҷавон" onclick="toggleChip(this)">
               <input type="checkbox" name="targetGender" value="Ҷавон" /> Ҷавон
             </label>
           </div>
@@ -366,8 +365,7 @@
       </button>
     </form>
   </div>
-
-  <div id="toast" class="toast"></div>
+    <div id="toast" class="toast"></div>
   <script>
     function showToast(msg) {
       const t = document.getElementById('toast');
@@ -407,16 +405,63 @@
       return Array.from(document.querySelectorAll('input[name="targetGender"]:checked')).map(cb => cb.value);
     }
 
-    function updateGenderLabels() {
+    function updateVisibility() {
       const gender = document.getElementById('gender').value;
       const label = document.getElementById('partnerLocationLabel');
-      if (!label) return;
-      if (gender === 'Мард' || gender === 'Ҷавон') {
-        label.textContent = 'Аз кадом шаҳру ноҳияҳои ҷумҳурӣ имконияти зангирӣ доред?';
+      const isMale = (gender === 'Мард' || gender === 'Ҷавон');
+      const isNeverMarried = (gender === 'Духтар' || gender === 'Ҷавон');
+
+      if (label) {
+        label.textContent = isMale
+          ? 'Аз кадом шаҳру ноҳияҳои ҷумҳурӣ имконияти зангирӣ доред?'
+          : 'Дар кадом шаҳру ноҳияҳо мехоҳед ба шавҳар бароед?';
+      }
+
+      document.querySelectorAll('#targetGenderGroup .chip-label').forEach(chip => {
+        const val = chip.getAttribute('data-target');
+        const cb = chip.querySelector('input[type="checkbox"]');
+        const allowed = isMale ? (val === 'Зан' || val === 'Духтар') : (val === 'Мард' || val === 'Ҷавон');
+        if (allowed) {
+          chip.style.display = 'inline-flex';
+        } else {
+          chip.style.display = 'none';
+          cb.checked = false;
+          chip.classList.remove('selected');
+        }
+      });
+
+      const maritalRow = document.getElementById('maritalChildrenRow');
+      const childrenWithGroup = document.getElementById('childrenWithGroup');
+      const childrenCountSelect = document.getElementById('childrenCount');
+      const maritalStatusSelect = document.getElementById('maritalStatus');
+
+      if (isNeverMarried) {
+        maritalRow.style.display = 'none';
+        childrenWithGroup.style.display = 'none';
+        maritalStatusSelect.value = 'Муҷаррад';
+        childrenCountSelect.value = 'Надорам';
+        document.getElementById('childrenWith').value = '';
       } else {
-        label.textContent = 'Дар кадом шаҳру ноҳияҳо мехоҳед ба шавҳар бароед?';
+        maritalRow.style.display = 'grid';
+        if (childrenCountSelect.value === 'Надорам') {
+          childrenWithGroup.style.display = 'none';
+          document.getElementById('childrenWith').value = '';
+        } else {
+          childrenWithGroup.style.display = 'block';
+        }
+      }
+
+      const housing = document.getElementById('housing').value;
+      const livingWithGroup = document.getElementById('livingWithGroup');
+      if (housing === 'Бо волидон (хонаи волидон)') {
+        livingWithGroup.style.display = 'none';
+        document.getElementById('livingWith').value = '';
+      } else {
+        livingWithGroup.style.display = 'block';
       }
     }
+
+    document.addEventListener('DOMContentLoaded', updateVisibility);
 
     function resetClientForm() {
       document.getElementById('clientForm').reset();
@@ -424,13 +469,22 @@
         label.querySelector('input').checked = false;
         label.classList.remove('selected');
       });
-      updateGenderLabels();
+      updateVisibility();
+    }
+
+    function cleanEndDot(str) {
+      return str.replace(/\.+$/, '').trim();
+    }
+
+    function lowerFirst(str) {
+      if (!str) return '';
+      return str.charAt(0).toLowerCase() + str.slice(1);
     }
 
     function sendAnketaToTelegram() {
       const age = document.getElementById('age').value.trim();
-      const location = document.getElementById('location').value.trim();
-      const requirements = document.getElementById('requirements').value.trim();
+      const location = cleanEndDot(document.getElementById('location').value.trim());
+      const requirements = cleanEndDot(document.getElementById('requirements').value.trim());
       const targetGenders = getSelectedTargetGenders();
 
       if (!age) return alert('Лутфан синну солро ворид кунед!');
@@ -439,22 +493,23 @@
       if (!requirements) return alert('Лутфан талабот нисбати ҳамсарро нависед!');
 
       const gender = document.getElementById('gender').value;
-      const internalName = document.getElementById('internalName').value.trim();
+      const isNeverMarried = (gender === 'Духтар' || gender === 'Ҷавон');
+      const internalName = cleanEndDot(document.getElementById('internalName').value.trim());
       const height = document.getElementById('height').value.trim();
       const weight = document.getElementById('weight').value.trim();
       const education = document.getElementById('education').value;
-      const job = document.getElementById('job').value.trim();
-      const maritalStatus = document.getElementById('maritalStatus').value;
-      const childrenCount = document.getElementById('childrenCount').value;
-      const childrenWith = document.getElementById('childrenWith').value.trim();
+      const job = cleanEndDot(document.getElementById('job').value.trim());
+      const maritalStatus = isNeverMarried ? 'Муҷаррад' : document.getElementById('maritalStatus').value;
+      const childrenCount = isNeverMarried ? 'Надорам' : document.getElementById('childrenCount').value;
+      const childrenWith = isNeverMarried ? '' : cleanEndDot(document.getElementById('childrenWith').value.trim());
       const housing = document.getElementById('housing').value;
-      const livingWith = document.getElementById('livingWith').value.trim();
-      const extraInfo = document.getElementById('extraInfo').value.trim();
+      const livingWith = (housing === 'Бо волидон (хонаи волидон)') ? '' : cleanEndDot(document.getElementById('livingWith').value.trim());
+      const extraInfo = cleanEndDot(document.getElementById('extraInfo').value.trim());
 
       const partnerChildrenAllowed = document.getElementById('partnerChildrenAllowed').value;
       const partnerAgeFrom = document.getElementById('partnerAgeFrom').value.trim();
       const partnerAgeTo = document.getElementById('partnerAgeTo').value.trim();
-      const partnerLocation = document.getElementById('partnerLocation').value.trim();
+      const partnerLocation = cleanEndDot(document.getElementById('partnerLocation').value.trim());
       const partnerMaxChildren = document.getElementById('partnerMaxChildren').value;
 
       const phone = document.getElementById('phone').value.trim() ? document.getElementById('phoneCode').value + ' ' + document.getElementById('phone').value.trim() : '';
@@ -463,8 +518,8 @@
       const imo = document.getElementById('imo').value.trim() ? document.getElementById('imoCode').value + ' ' + document.getElementById('imo').value.trim() : '';
       const facebook = document.getElementById('facebook').value.trim();
 
-      const targetMap = { 'Зан': 'бо зани', 'Духтар': 'бо духтари', 'Мард': 'бо марди', 'Ҷавон': 'бо ҷавони' };
-      const targetPhrase = targetGenders.map(t => targetMap[t] || t).join(' ё ');
+      const targetMap = { 'Зан': 'зане', 'Духтар': 'духтаре', 'Мард': 'марде', 'Ҷавон': 'ҷавоне' };
+      const targetPhrase = 'бо ' + targetGenders.map(t => targetMap[t] || t).join(' ё ');
 
       let message = `${gender}. ${age} сола.\n`;
       if (internalName) message += `Ном: ${internalName}.\n`;
@@ -475,15 +530,17 @@
       if (job) message += `Касбу кор: ${job}.\n`;
       message += `Ҳолати оилавӣ: ${maritalStatus}.\n`;
 
-      if (childrenCount !== 'Надорам') {
-        message += `Соҳиби ${childrenCount}.\n`;
-        if (childrenWith) message += `Фарзандонам ${childrenWith}.\n`;
-      } else {
-        message += `Фарзанд надорам.\n`;
+      if (!isNeverMarried) {
+        if (childrenCount !== 'Надорам') {
+          message += `Соҳиби ${childrenCount}.\n`;
+          if (childrenWith) message += `Фарзандонам: ${lowerFirst(childrenWith)}.\n`;
+        } else {
+          message += `Фарзанд надорам.\n`;
+        }
       }
 
       message += `Манзили зист: ${housing}.\n`;
-      if (livingWith) message += `Дар манзили зист ${livingWith} зиндагӣ мекунам.\n`;
+      if (livingWith) message += `Дар манзили зист: ${lowerFirst(livingWith)} зиндагӣ мекунам.\n`;
       if (extraInfo) message += `Маълумоти иловагӣ: ${extraInfo}.\n`;
 
       let seekLine = `Мехоҳам ${targetPhrase} оиладор шавам`;
@@ -499,7 +556,7 @@
       message += `.\n`;
 
       if (partnerLocation) message += `Минтақаҳо: ${partnerLocation}.\n`;
-      message += `Талабот: ${requirements}\n\n`;
+      message += `Талабот: ${requirements}.\n\n`;
 
       message += `🔒 Тамосҳои шахсӣ:\n`;
       if (phone) message += `📞 Тел: ${phone}\n`;
@@ -508,9 +565,9 @@
       if (imo) message += `📱 IMO: ${imo}\n`;
       if (facebook) message += `🔵 Facebook: ${facebook}\n`;
 
-                  const encodedText = encodeURIComponent(message);
+      const encodedText = encodeURIComponent(message);
       const tgUsername = "Koshonai_Bakht";
-      const tgUrl = `https://t.me/${tgUsername}?text=${encodedText}`;
+      const tgUrl = `https://t.me{tgUsername}?text=${encodedText}`;
 
       showToast('✅ Telegram кушода мешавад...');
       window.location.href = tgUrl;
